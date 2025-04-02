@@ -1,14 +1,25 @@
 import { NextResponse } from "next/server";
 
 export async function POST(req) {
-  const body = await req.json();
-  
-  console.log("🔔 PayPal Webhook Event Received:", body);
+  try {
+    const body = await req.json();
+    console.log("🔔 PayPal Webhook Received:", body);
 
-  if (body.event_type === "PAYMENT.CAPTURE.COMPLETED") {
-    console.log("✅ Payment successful! Transaction ID:", body.resource.id);
-    // Update your database to mark payment as completed
+    return new Response(JSON.stringify({ message: "Webhook received" }), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+    });
+  } catch (error) {
+    console.error("Webhook Error:", error);
+    return new Response(JSON.stringify({ message: "Error processing webhook" }), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+    });
   }
-
-  return NextResponse.json({ message: "Webhook received" }, { status: 200 });
 }
