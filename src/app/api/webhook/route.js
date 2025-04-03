@@ -8,16 +8,16 @@ import {
 export async function POST(req) {
   try {
     const body = await req.json();
-
+console.log('my body is >>>',body);
     const myEmail = body?.resource?.invoice_id || "No email provided";
     const myUrl = body?.resource?.custom_id || "No URL Provided";
-    const firstName =
-      body?.resource?.payer?.name?.given_name || "No first name";
+    const firstName = body?.resource?.payer?.name?.given_name || "No first name";
     const lastName = body?.resource?.payer?.name?.surname || "No last name";
     let status = "Unsuccessful";
 
     if (body?.resource?.status === "COMPLETED") status = "Successful";
 
+    console.log('my firstnam e>>>', firstName, 'my last name is >>>>>', lastName)
     const requestBody = {
       limit: 10,
       after: null,
