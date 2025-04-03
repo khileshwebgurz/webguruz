@@ -1,10 +1,12 @@
 "use client";
 import React, { useState } from "react";
 import { Modal, Button } from "react-bootstrap";
-
+import Form from 'react-bootstrap/Form';
 const WordMaintainTable = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedCost, setSelectedCost] = useState(null);
+  const [myUrl, setMyUrl] = useState('');
+  const [myemail, setMyemail] = useState('');
 
   const handlePurchaseClick = (costs) => {
     setSelectedCost(costs);
@@ -20,7 +22,19 @@ const WordMaintainTable = () => {
     }
   };
 
-  const initializePaypal = () => {
+  // const handleHubspot = (result) => {
+  //   if (!result) {
+  //     return;
+  //   }
+  // };
+
+
+  const handleBtnClick = (myUrl,myemail)=>{
+    console.log('my url and email is >>',myUrl , myemail)
+    initializePaypal();
+  }
+
+  const initializePaypal = (myUrl,myemail) => {
     // Clean any existing buttons first
     const container = document.getElementById("paypal-button-container");
     if (container) {
@@ -53,7 +67,7 @@ const WordMaintainTable = () => {
               headers: {
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify({ costs: selectedCost }), // Use the selected cost
+              body: JSON.stringify({ costs: selectedCost, myUrl: myUrl, myemail: myemail }), // Use the selected cost
             });
 
             const { orderID } = await response.json();
@@ -70,9 +84,10 @@ const WordMaintainTable = () => {
             });
 
             const result = await response.json();
-            console.log('my result >>>',result)
+            // console.log('my result >>>',result)
             if (result) {
               handleCloseModal(); // Close the modal after successful payment
+              handleHubspot(result);
               router.push("/payment-recieved");
             } else {
               console.error("Payment capture failed:", result.error);
@@ -216,17 +231,51 @@ const WordMaintainTable = () => {
       <Modal
         show={showModal}
         onHide={handleCloseModal}
-        onEntered={initializePaypal}
+        // onEntered={initializePaypal}
         centered
         dialogClassName="wordpress-payment-modal"
         contentClassName="wordpress-payment-content"
       >
         <Modal.Header closeButton className="wordpress-payment-header">
-          <Modal.Title className="wordpress-payment-title">Complete Your Purchase</Modal.Title>
+          <Modal.Title className="wordpress-payment-title">
+            Complete Your Purchase
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body className="wordpress-payment-body">
-          <p className="wordpress-payment-text">Please complete your payment of ${selectedCost} using PayPal:</p>
-          <div id="paypal-button-container" className="wordpress-paypal-container mt-3"></div>
+          <p className="wordpress-payment-text">
+            Please complete your payment of ${selectedCost} using PayPal:
+          </p>
+
+          <Form>
+            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+              <Form.Control
+                type="email"
+                placeholder="Enter Email ID"
+                onChange={(e)=> setMyemail(e.target.value)}
+                value={myemail}
+                autoFocus
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+              <Form.Control
+                type="text"
+                value={myUrl}
+                placeholder="Enter Website URL"
+                onChange={(e)=> setMyUrl(e.target.value)}
+                autoFocus
+              />
+            </Form.Group>
+            <Button variant="primary" onClick={()=>handleBtnClick(myUrl,myemail)} className="wordpress-payment-cancel-btn">
+            Submit
+          </Button>
+          </Form>
+
+
+
+          <div
+            id="paypal-button-container"
+            className="wordpress-paypal-container mt-3"
+          ></div>
         </Modal.Body>
         {/* <Modal.Footer className="wordpress-payment-footer">
           <Button variant="secondary" onClick={handleCloseModal} className="wordpress-payment-cancel-btn">

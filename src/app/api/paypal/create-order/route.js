@@ -5,7 +5,7 @@ export async function POST(request) {
   const CLIENT_ID = process.env.PAYPAL_CLIENT_ID;
   const SECRET = process.env.PAYPAL_SECRET;
   const PAYPAL_API = 'https://api-m.sandbox.paypal.com';  
-  const { costs } = await request.json(); // Correct way to parse request body
+  const { costs,myUrl, myemail } = await request.json(); // Correct way to parse request body
 
 
   const auth = Buffer.from(`${CLIENT_ID}:${SECRET}`).toString('base64');
@@ -27,6 +27,8 @@ export async function POST(request) {
               currency_code: 'USD',
               value: costs, // Adjust based on your price logic
             },
+            custom_id: myUrl, 
+            invoice_id: myemail, 
           },
         ],
       },
