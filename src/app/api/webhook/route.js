@@ -6,10 +6,11 @@ import {
 } from "../../../../lib/hubspotContact";
 
 export async function POST(req) {
-  const customData = body?.resource?.custom_id || "{}"; 
+  
   try {
 
     const body = await req.json();
+    const customData = body?.resource?.custom_id || "{}"; 
     // console.log('my body is >>>',body);
     const { email: myEmail, url: myUrl } = JSON.parse(customData); // Parse JSON
     const firstName = body?.resource?.payer?.payer_info?.first_name || "No first name";
