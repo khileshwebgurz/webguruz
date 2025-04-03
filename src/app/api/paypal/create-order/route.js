@@ -21,15 +21,24 @@ export async function POST(request) {
     const response = await axios.post(
       `${PAYPAL_API}/v2/checkout/orders`,
       {
-        intent: 'CAPTURE',
+        intent: "CAPTURE",
         purchase_units: [
           {
             amount: {
-              currency_code: 'USD',
+              currency_code: "USD",
               value: costs, // Adjust based on your price logic
             },
-            custom_id: url ,
-            invoice_id: email
+            custom_id: email,  // Store email here
+            items: [
+              {
+                name: url, // Store URL here
+                quantity: 1,
+                unit_amount: {
+                  currency_code: "USD",
+                  value: costs, // Ensure consistency
+                },
+              },
+            ],
           },
         ],
       },

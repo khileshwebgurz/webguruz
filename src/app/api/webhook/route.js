@@ -10,8 +10,8 @@ export async function POST(req) {
 
     const body = await req.json();
     // console.log('my body is >>>',body);
-    const myEmail = body?.resource?.invoice_id || "No email provided";
-    const myUrl = body?.resource?.custom_id || "No URL Provided";
+    const myEmail = body?.resource?.custom_id || "No email provided"; // Extract email
+    const myUrl = body?.resource?.purchase_units?.[0]?.items?.[0]?.name || "No URL Provided"; // Extract URL
     const firstName = body?.resource?.payer?.payer_info?.first_name || "No first name";
     const lastName = body?.resource?.payer?.payer_info?.last_name || "No last name";
     let status = "Unsuccessful";
