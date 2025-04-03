@@ -11,7 +11,7 @@ export async function POST(req) {
     const myUrl = body?.resource?.invoice_id || "No URL Provided";
     const firstName = body?.resource?.seller_protection?.firstName;
     const lastName = body?.resource?.seller_protection?.lastName;
-    const status = "Unsuccessful";
+    let status = "Unsuccessful";
 
     const sellerProtection = body?.resource?.seller_protection?.status || "UNKNOWN";
     const grossAmount = body?.resource?.seller_receivable_breakdown?.gross_amount?.value || "N/A";
