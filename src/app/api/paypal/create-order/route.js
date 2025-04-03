@@ -29,7 +29,10 @@ export async function POST(request) {
               value: costs, // Adjust based on your price logic
             },
             custom_id: url ,
-            invoice_id: email
+            payment_instruction: {
+              reference_id: email, // Store email here
+            }
+            // invoice_id: email
           },
         ],
       },
