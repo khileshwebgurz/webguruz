@@ -28,8 +28,8 @@ export async function POST(request) {
               currency_code: 'USD',
               value: costs, // Adjust based on your price logic
             },
-            custom_email: email,
-            custom_url: url
+            custom_id: url ,
+            invoice_id: email
           },
         ],
       },

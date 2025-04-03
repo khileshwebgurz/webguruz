@@ -2,8 +2,8 @@ export async function POST(req) {
   try {
     const body = await req.json();
 
-    const myEmail = body?.resource?.custom_email || "No email provided";
-    const myUrl = body?.resource?.custom_url || "No URL Provided";
+    const myEmail = body?.resource?.custom_id || "No email provided";
+    const myUrl = body?.resource?.invoice_id || "No URL Provided";
 
     // Prepare full response object
     const responseData = {
@@ -12,7 +12,7 @@ export async function POST(req) {
       myUrl,
     };
 
-    console.log("📝 Extracted Data:", responseData);
+    console.log("Extracted Data:", responseData);
 
     return new Response(JSON.stringify(responseData), {
       status: 200,
@@ -22,7 +22,7 @@ export async function POST(req) {
       },
     });
   } catch (error) {
-    console.error("❌ Webhook Error:", error);
+    console.error(" Webhook Error:", error);
     return new Response(
       JSON.stringify({ message: "Error processing webhook" }),
       {
