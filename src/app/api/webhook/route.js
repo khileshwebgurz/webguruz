@@ -19,7 +19,7 @@ export async function POST(req) {
 
     if (body?.resource?.status === "COMPLETED") status = "Successful";
 
-    console.log('my payer>>>>' ,  body?.resource?.payer)
+    console.log('my payer>>>>' ,  body?.resource)
     console.log('fname', firstName, lastName);
     const requestBody = {
       limit: 10,
