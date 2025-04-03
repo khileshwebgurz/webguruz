@@ -11,7 +11,7 @@ export async function POST(req) {
       myEmail,
       myUrl,
     };
-
+    console.log("my extracted data is >>>", body);
     console.log("Extracted Data:", responseData);
 
     return new Response(JSON.stringify(responseData), {
