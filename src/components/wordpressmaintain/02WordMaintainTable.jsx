@@ -87,7 +87,7 @@ const WordMaintainTable = () => {
             // console.log('my result >>>',result)
             if (result) {
               handleCloseModal(); // Close the modal after successful payment
-              handleHubspot(result);
+            
               router.push("/payment-recieved");
             } else {
               console.error("Payment capture failed:", result.error);
