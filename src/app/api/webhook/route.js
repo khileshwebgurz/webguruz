@@ -6,7 +6,7 @@ export async function POST(req) {
     const myUrl = body?.resource?.invoice_id || "No URL Provided";
     const firstName = body?.resource?.payer?.name?.given_name || "No first name";
     const lastName = body?.resource?.payer?.name?.surname || "No last name";
-    const status = "Unsuccessful";
+    let status = "Unsuccessful";
 
     if(body?.resource?.status === "COMPLETED") status = "Successful";
 
