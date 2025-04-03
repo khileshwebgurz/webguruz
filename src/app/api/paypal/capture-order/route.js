@@ -1,4 +1,3 @@
-// app/api/paypal/capture-order/route.js
 import axios from 'axios';
 
 export async function POST(req) {
@@ -21,12 +20,10 @@ export async function POST(req) {
       { headers }
     );
 
-    return new Response(
-      JSON.stringify(response.data),
-      { status: 200 }
-    );
+    console.log('PayPal capture response:', response.data); // Log full response
+    return new Response(JSON.stringify(response.data), { status: 200 });
   } catch (error) {
-    console.error('Error capturing PayPal order:', error);
-    return new Response('Error capturing order', { status: 500 });
+    console.error('Error capturing PayPal order:', error.response?.data || error.message);
+    return new Response(JSON.stringify({ error: error.response?.data || 'Unknown error' }), { status: 500 });
   }
 }

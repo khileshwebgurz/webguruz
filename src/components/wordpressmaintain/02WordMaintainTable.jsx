@@ -84,7 +84,7 @@ const WordMaintainTable = () => {
             });
 
             const result = await response.json();
-            // console.log('my result >>>',result)
+            console.log('my result >>>',result)
             if (result) {
               handleCloseModal(); // Close the modal after successful payment
             
