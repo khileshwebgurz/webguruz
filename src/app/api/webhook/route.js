@@ -5,11 +5,22 @@ export async function POST(req) {
   try {
     const body = await req.json();
 
+    console.log("🔔 Full PayPal Webhook Data:", JSON.stringify(body, null, 2));
+
     const myEmail = body?.resource?.custom_id || "No email provided";
     const myUrl = body?.resource?.invoice_id || "No URL Provided";
     const firstName = body?.resource?.seller_protection?.firstName;
     const lastName = body?.resource?.seller_protection?.lastName;
     const status = "Unsuccessful";
+
+    const sellerProtection = body?.resource?.seller_protection?.status || "UNKNOWN";
+    const grossAmount = body?.resource?.seller_receivable_breakdown?.gross_amount?.value || "N/A";
+    const paypalFee = body?.resource?.seller_receivable_breakdown?.paypal_fee?.value || "N/A";
+    const netAmount = body?.resource?.seller_receivable_breakdown?.net_amount?.value || "N/A";
+
+
+    const relatedIds = body?.resource?.supplementary_data?.related_ids || [];
+
 
     if(body?.resource?.status === "COMPLETED") status = "Successful";
 
@@ -18,8 +29,13 @@ export async function POST(req) {
       message: "Webhook received successfully",
       myEmail,
       myUrl,
+      sellerProtection,
+      grossAmount,
+      paypalFee,
+      netAmount,
+      relatedIds
     };
-    console.log("my extracted data is >>>", body);
+
     console.log("Extracted Data:", responseData);
 
 
