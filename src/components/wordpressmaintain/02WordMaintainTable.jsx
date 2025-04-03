@@ -250,9 +250,9 @@ const WordMaintainTable = () => {
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
               <Form.Control
                 type="email"
-                placeholder="Enter Email ID"
-                onChange={(e)=> setMyemail(e.target.value)}
                 value={myemail}
+                placeholder="Enter Email ID"
+                onChange={(e)=> setMyemail(e.target.value)}                
                 autoFocus
               />
             </Form.Group>
