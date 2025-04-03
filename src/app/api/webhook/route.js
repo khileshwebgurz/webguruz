@@ -2,16 +2,17 @@ export async function POST(req) {
   try {
     const body = await req.json();
 
-    const myUrl = body?.resource?.custom || "No URL provided";
+    const myEmail = body?.resource?.custom_email || "No email provided";
+    const myUrl = body?.resource?.custom_url || "No URL Provided";
 
     // Prepare full response object
     const responseData = {
       message: "Webhook received successfully",
-
+      myEmail,
       myUrl,
     };
 
-    console.log("📝 Extracted Data:", JSON.stringify(responseData, null, 2));
+    console.log("📝 Extracted Data:", responseData);
 
     return new Response(JSON.stringify(responseData), {
       status: 200,
