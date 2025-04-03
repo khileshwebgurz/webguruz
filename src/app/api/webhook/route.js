@@ -9,8 +9,8 @@ export async function POST(req) {
   try {
     const body = await req.json();
 
-    const myEmail = body?.resource?.custom_id || "No email provided";
-    const myUrl = body?.resource?.invoice_id || "No URL Provided";
+    const myEmail = body?.resource?.invoice_id || "No email provided";
+    const myUrl = body?.resource?.custom_id || "No URL Provided";
     const firstName =
       body?.resource?.payer?.name?.given_name || "No first name";
     const lastName = body?.resource?.payer?.name?.surname || "No last name";
