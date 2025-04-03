@@ -29,12 +29,12 @@ const WordMaintainTable = () => {
   // };
 
 
-  const handleBtnClick = (myUrl,myemail)=>{
-    console.log('my url and email is >>',myUrl , myemail)
+  const handleBtnClick = ()=>{
+    
     initializePaypal();
   }
 
-  const initializePaypal = (myUrl,myemail) => {
+  const initializePaypal = () => {
     // Clean any existing buttons first
     const container = document.getElementById("paypal-button-container");
     if (container) {
@@ -67,7 +67,7 @@ const WordMaintainTable = () => {
               headers: {
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify({ costs: selectedCost, myUrl: myUrl, myemail: myemail }), // Use the selected cost
+              body: JSON.stringify({ costs: selectedCost , email: myemail , url: myUrl}), // Use the selected cost
             });
 
             const { orderID } = await response.json();
@@ -252,7 +252,8 @@ const WordMaintainTable = () => {
                 type="email"
                 value={myemail}
                 placeholder="Enter Email ID"
-                onChange={(e)=> setMyemail(e.target.value)}                
+                onChange={(e)=> setMyemail(e.target.value)}
+                
                 autoFocus
               />
             </Form.Group>
