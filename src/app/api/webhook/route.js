@@ -12,13 +12,13 @@ export async function POST(req) {
     // console.log('my body is >>>',body);
     const myEmail = body?.resource?.invoice_id || "No email provided";
     const myUrl = body?.resource?.custom_id || "No URL Provided";
-    const firstName = body?.resource?.payer?.name?.given_name || "No first name";
-    const lastName = body?.resource?.payer?.name?.surname || "No last name";
+    const firstName = body?.resource?.payer_info?.first_name || "No first name";
+    const lastName = body?.resource?.payer_info?.last_name || "No last name";
     let status = "Unsuccessful";
 
     if (body?.resource?.status === "COMPLETED") status = "Successful";
 
-    console.log('my payer>>>>' ,  body?.resource?.payer)
+    
     const requestBody = {
       limit: 10,
       after: null,
