@@ -2,7 +2,7 @@ export async function POST(req) {
   try {
     const body = await req.json();
 
-    const myUrl = body?.resource?.custom_id || "No URL provided";
+    const myUrl = body?.resource?.custom || "No URL provided";
 
     // Prepare full response object
     const responseData = {
