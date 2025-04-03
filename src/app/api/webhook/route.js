@@ -6,12 +6,12 @@ import {
 } from "../../../../lib/hubspotContact";
 
 export async function POST(req) {
+  const customData = body?.resource?.custom_id || "{}"; 
   try {
 
     const body = await req.json();
     // console.log('my body is >>>',body);
-    const myEmail = body?.resource?.custom_id || "No email provided"; // Extract email
-    const myUrl = body?.resource?.purchase_units?.[0]?.items?.[0]?.name || "No URL Provided"; // Extract URL
+    const { email: myEmail, url: myUrl } = JSON.parse(customData); // Parse JSON
     const firstName = body?.resource?.payer?.payer_info?.first_name || "No first name";
     const lastName = body?.resource?.payer?.payer_info?.last_name || "No last name";
     let status = "Unsuccessful";
