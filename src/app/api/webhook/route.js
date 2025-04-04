@@ -26,7 +26,7 @@ export async function POST(req) {
 
 
     // Extract PayPal capture ID
-    const captureId = body?.resource?.id;
+    const captureId = body?.resource?.supplementary_data?.related_ids?.order_id;
 
     // Step 1: Fetch payer details using PayPal API
     let firstName = "No first name";
@@ -40,7 +40,7 @@ export async function POST(req) {
 
      try {
           const payerResponse = await axios.get(
-            `https://api-m.sandbox.paypal.com/v2/payments/captures/${captureId}`,
+            `https://api.sandbox.paypal.com/v2/checkout/orders/${captureId}`,
             {
               headers: {
                 Authorization: `Bearer ${accessToken}`,
