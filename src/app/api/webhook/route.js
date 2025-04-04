@@ -40,44 +40,44 @@ export async function POST(req) {
       ],
     };
 
-    // const response = await axios.post(
-    //   "https://api.hubapi.com/crm/v3/objects/contacts/search",
-    //   requestBody,
-    //   {
-    //     headers: {
-    //       Authorization: `Bearer ${HUBSPOT_API_KEY}`,
-    //       "Content-Type": "application/json",
-    //     },
-    //   }
-    // );
+    const response = await axios.post(
+      "https://api.hubapi.com/crm/v3/objects/contacts/search",
+      requestBody,
+      {
+        headers: {
+          Authorization: `Bearer ${HUBSPOT_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
-    // console.log("my response data is >>>>", response.data);
+    console.log("my response data is >>>>", response.data);
 
     let message = "";
 
-    // if (response.data.results.length > 0) {
-    //   await updateContact(response.data.results[0].id, HUBSPOT_API_KEY);
-    //   message = "Contact Updated";
-    // } else {
-    //   console.log('my email for hubspot  is >>>>>', myEmail , 'my url is >>', myUrl)
-    //   await createHubSpotContact(
-    //     myEmail,
-    //     firstName,
-    //     lastName,
-    //     status,
-    //     myUrl,
-    //     HUBSPOT_API_KEY
-    //   );
-    //   message = "Contact Created";
-    // }
+    if (response.data.results.length > 0) {
+      await updateContact(response.data.results[0].id, HUBSPOT_API_KEY);
+      message = "Contact Updated";
+    } else {
+      console.log('my email for hubspot  is >>>>>', myEmail , 'my url is >>', url)
+      await createHubSpotContact(
+        myEmail,
+        firstName,
+        lastName,
+        status,
+        url,
+        HUBSPOT_API_KEY
+      );
+      message = "Contact Created";
+    }
     // Prepare full response object
-    // const responseData = {
-    //   message: "Webhook received successfully",
-    //   myEmail,
-    //   myUrl,
-    // };
+    const responseData = {
+      message: "Webhook received successfully",
+      myEmail,
+      url,
+    };
 
-    // console.log("Extracted Data:", responseData);
+    console.log("Extracted Data:", responseData);
 
     return new Response(JSON.stringify({message: message}), {
       status: 200,
