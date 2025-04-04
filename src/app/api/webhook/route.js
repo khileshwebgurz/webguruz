@@ -13,10 +13,10 @@ export async function POST(req) {
 
     const body = await req.json();
     const customData = body?.resource?.custom_id || "{}"; 
-    console.log('my custom data is >>>',customData);
+    // console.log('my custom data is >>>',customData);
 
     const { email: myEmail, url: url } = JSON.parse(customData); // Parse JSON
-    console.log('my email and url is >>>' ,myEmail, url)
+    // console.log('my email and url is >>>' ,myEmail, url)
 
     // const firstName = body?.resource?.payer?.name?.given_name || "No first name";
     // const lastName = body?.resource?.payer?.name?.surname || "No last name";
@@ -50,6 +50,9 @@ export async function POST(req) {
           );
     
           const payerInfo = payerResponse?.data?.payer?.name;
+          console.log('pyaerrespnse>>>>',payerResponse);
+          console.log('more data >>>',payerResponse?.data);
+          console.log('another more>>>',payerResponse?.data?.payer)
           if (payerInfo) {
             firstName = payerInfo.given_name || "No first name";
             lastName = payerInfo.surname || "No last name";
