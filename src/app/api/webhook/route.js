@@ -1,5 +1,6 @@
 import axios from "axios";
 const HUBSPOT_API_KEY = process.env.HUBSPOT_KEY;
+const PAYPAL_ACCESS_TOKEN = process.env.PAYPAL_ACCESS_TOKEN;
 import {
   updateContact,
   createHubSpotContact,
@@ -12,17 +13,52 @@ export async function POST(req) {
     const body = await req.json();
     const customData = body?.resource?.custom_id || "{}"; 
     console.log('my custom data is >>>',customData);
+
     const { email: myEmail, url: url } = JSON.parse(customData); // Parse JSON
     console.log('my email and url is >>>' ,myEmail, url)
-    const firstName = body?.resource?.payer?.name?.given_name || "No first name";
-    const lastName = body?.resource?.payer?.name?.surname || "No last name";
-    let status = "Unsuccessful";
 
+    // const firstName = body?.resource?.payer?.name?.given_name || "No first name";
+    // const lastName = body?.resource?.payer?.name?.surname || "No last name";
+
+    let status = "Unsuccessful";
     if (body?.resource?.status === "COMPLETED") status = "Successful";
+
+
+    // Extract PayPal capture ID
+    const captureId = body?.resource?.id;
+
+    // Step 1: Fetch payer details using PayPal API
+    let firstName = "No first name";
+    let lastName = "No last name";
+
 
     console.log('my payer>>>>' ,  body)
     console.log('fname', firstName, lastName);
     console.log('resoruce dara is >>>',body?.resource);
+
+     try {
+          const payerResponse = await axios.get(
+            `https://api-m.sandbox.paypal.com/v2/payments/captures/${captureId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${PAYPAL_ACCESS_TOKEN}`,
+                "Content-Type": "application/json",
+              },
+            }
+          );
+    
+          const payerInfo = payerResponse?.data?.payer?.name;
+          if (payerInfo) {
+            firstName = payerInfo.given_name || "No first name";
+            lastName = payerInfo.surname || "No last name";
+          }
+    
+          console.log("Fetched Payer Details:", firstName, lastName);
+        } catch (payerError) {
+          console.error("Error fetching payer details:", payerError.response?.data);
+        }
+
+
     const requestBody = {
       limit: 10,
       after: null,
