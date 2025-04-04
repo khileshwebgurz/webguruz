@@ -48,7 +48,7 @@ export async function POST(req) {
               },
             }
           );
-    
+    console.log('my payeresponse >>>>',payerResponse)
           const payerInfo = payerResponse?.payment_source?.paypal?.name;
           console.log('pyaerrespnse>>>>',payerInfo);
          
