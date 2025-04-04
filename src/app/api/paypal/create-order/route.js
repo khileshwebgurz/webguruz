@@ -7,7 +7,7 @@ export async function POST(request) {
   const PAYPAL_API = 'https://api-m.sandbox.paypal.com';  
   const { costs, email , url } = await request.json(); // Correct way to parse request body
 
-  console.log('my email and url is >>', email , url)
+  
 
   const auth = Buffer.from(`${CLIENT_ID}:${SECRET}`).toString('base64');
  

@@ -11,8 +11,9 @@ export async function POST(req) {
 
     const body = await req.json();
     const customData = body?.resource?.custom_id || "{}"; 
-    // console.log('my body is >>>',body);
-    const { email: myEmail, url: myUrl } = JSON.parse(customData); // Parse JSON
+    console.log('my custom data is >>>',customData);
+    const { email: myEmail, url: url } = JSON.parse(customData); // Parse JSON
+    console.log('my email and url is >>>' ,myEmail, url)
     const firstName = body?.resource?.payer?.name?.given_name || "No first name";
     const lastName = body?.resource?.payer?.name?.surname || "No last name";
     let status = "Unsuccessful";
@@ -50,7 +51,7 @@ export async function POST(req) {
     //   }
     // );
 
-    console.log("my response data is >>>>", response.data);
+    // console.log("my response data is >>>>", response.data);
 
     let message = "";
 
