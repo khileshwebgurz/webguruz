@@ -13,8 +13,8 @@ export async function POST(req) {
     const customData = body?.resource?.custom_id || "{}"; 
     // console.log('my body is >>>',body);
     const { email: myEmail, url: myUrl } = JSON.parse(customData); // Parse JSON
-    const firstName = body?.payer?.name?.given_name || "No first name";
-    const lastName = body?.payer?.name?.surname || "No last name";
+    const firstName = body?.resource?.payer?.payer_info?.first_name || "No first name";
+    const lastName = body?.resource?.payer?.payer_info?.last_name || "No last name";
     let status = "Unsuccessful";
 
     if (body?.resource?.status === "COMPLETED") status = "Successful";
