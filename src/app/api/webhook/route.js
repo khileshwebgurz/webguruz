@@ -48,9 +48,9 @@ export async function POST(req) {
               },
             }
           );
-    console.log('my payeresponse >>>>',payerResponse?.data?.payer)
-          const payerInfo = payerResponse?.payment_source?.paypal?.name;
-          console.log('pyaerrespnse>>>>',payerInfo);
+    console.log('my payeresponse >>>>',payerResponse?.data?.payer?.name);
+          const payerInfo = payerResponse?.data?.payer?.name;
+         
          
           if (payerInfo) {
             firstName = payerInfo.given_name || "No first name";
