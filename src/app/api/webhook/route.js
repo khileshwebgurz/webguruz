@@ -13,14 +13,15 @@ export async function POST(req) {
     const customData = body?.resource?.custom_id || "{}"; 
     // console.log('my body is >>>',body);
     const { email: myEmail, url: myUrl } = JSON.parse(customData); // Parse JSON
-    const firstName = body?.resource?.payer?.payer_info?.first_name || "No first name";
-    const lastName = body?.resource?.payer?.payer_info?.last_name || "No last name";
+    const firstName = body?.resource?.payer?.name?.given_name || "No first name";
+    const lastName = body?.resource?.payer?.name?.surname || "No last name";
     let status = "Unsuccessful";
 
     if (body?.resource?.status === "COMPLETED") status = "Successful";
 
     console.log('my payer>>>>' ,  body)
     console.log('fname', firstName, lastName);
+    console.log('resoruce dara is >>>',body?.resource);
     const requestBody = {
       limit: 10,
       after: null,
@@ -38,36 +39,36 @@ export async function POST(req) {
       ],
     };
 
-    const response = await axios.post(
-      "https://api.hubapi.com/crm/v3/objects/contacts/search",
-      requestBody,
-      {
-        headers: {
-          Authorization: `Bearer ${HUBSPOT_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    // const response = await axios.post(
+    //   "https://api.hubapi.com/crm/v3/objects/contacts/search",
+    //   requestBody,
+    //   {
+    //     headers: {
+    //       Authorization: `Bearer ${HUBSPOT_API_KEY}`,
+    //       "Content-Type": "application/json",
+    //     },
+    //   }
+    // );
 
     console.log("my response data is >>>>", response.data);
 
     let message = "";
 
-    if (response.data.results.length > 0) {
-      await updateContact(response.data.results[0].id, HUBSPOT_API_KEY);
-      message = "Contact Updated";
-    } else {
-      console.log('my email for hubspot  is >>>>>', myEmail , 'my url is >>', myUrl)
-      await createHubSpotContact(
-        myEmail,
-        firstName,
-        lastName,
-        status,
-        myUrl,
-        HUBSPOT_API_KEY
-      );
-      message = "Contact Created";
-    }
+    // if (response.data.results.length > 0) {
+    //   await updateContact(response.data.results[0].id, HUBSPOT_API_KEY);
+    //   message = "Contact Updated";
+    // } else {
+    //   console.log('my email for hubspot  is >>>>>', myEmail , 'my url is >>', myUrl)
+    //   await createHubSpotContact(
+    //     myEmail,
+    //     firstName,
+    //     lastName,
+    //     status,
+    //     myUrl,
+    //     HUBSPOT_API_KEY
+    //   );
+    //   message = "Contact Created";
+    // }
     // Prepare full response object
     // const responseData = {
     //   message: "Webhook received successfully",
