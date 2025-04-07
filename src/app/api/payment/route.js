@@ -9,13 +9,19 @@ const razorpay = new Razorpay({
 });
 
 export async function POST(req) {
+
   try {
-    const { amount } = await req.json();
+    const { amount, email , url } = await req.json();
+   
     const options = {
       amount: amount * 100,
       currency: "INR",
       receipt: `receipt_${Math.random()}`,
       payment_capture: 1,
+      notes: {
+        email: email,
+        url: url,
+      },
     };
 
     const order = await razorpay.orders.create(options);
@@ -24,6 +30,7 @@ export async function POST(req) {
         orderId: order.id,
         amount: order.amount,
         currency: order.currency,
+        notes: order.notes
       }),
       {
         status: 200,
