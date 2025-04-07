@@ -13,6 +13,8 @@ export async function POST(req) {
     );
     const myEmail = body.payload.payment.entity.notes.email;
     const url = body.payload.payment.entity.notes.url;
+    const firstName = '';
+    const lastName = '';
 
     let status = "Unsuccessful";
     if (body.payload.payment.entity.status === "captured")
