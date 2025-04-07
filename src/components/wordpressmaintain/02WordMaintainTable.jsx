@@ -169,7 +169,7 @@ const WordMaintainTable = () => {
                 costs: selectedCost,
                 email: myemail,
                 url: myUrl,
-              }), // Use the selected cost
+              }), 
             });
 
             const { orderID } = await response.json();

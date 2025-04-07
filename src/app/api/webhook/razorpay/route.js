@@ -3,7 +3,7 @@
 export async function POST(req) {
   try {
     const body = await req.json();
-    console.log('my razorpay webhook data is >>>>', body);
+    console.log('my razorpay webhook data is >>>>', body.payload);
     let message = 'Webhook of razorpay sent data.'
   
     return new Response(JSON.stringify({ message: message }), {
