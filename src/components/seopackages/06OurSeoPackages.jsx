@@ -145,6 +145,7 @@ const OurSeoPackages = () => {
     }
   };
 
+  // for country change
   const handleCountryChange = (event) => {
     const country = event.target.value;
     setSelectedCountry(country);

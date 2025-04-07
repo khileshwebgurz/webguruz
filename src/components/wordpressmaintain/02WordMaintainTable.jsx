@@ -1,17 +1,31 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal, Button } from "react-bootstrap";
-import Form from 'react-bootstrap/Form';
+import Form from "react-bootstrap/Form";
 const WordMaintainTable = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedCost, setSelectedCost] = useState(null);
-  const [myUrl, setMyUrl] = useState('');
-  const [myemail, setMyemail] = useState('');
+  const [myUrl, setMyUrl] = useState("");
+  const [myemail, setMyemail] = useState("");
+  const [selectedCountry, setSelectedCountry] = useState("");
+  const [countryModal, setCountryModal] = useState(false);
+  const [isLoading, setLoading] = useState(false);
 
-  const handlePurchaseClick = (costs) => {
-    setSelectedCost(costs);
-    setShowModal(true);
-  };
+  // const handlePurchaseClick = (costs) => {
+  //   setSelectedCost(costs);
+  //   setShowModal(true);
+  // };
+
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.async = true;
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
 
   const handleCloseModal = () => {
     setShowModal(false);
@@ -22,17 +36,101 @@ const WordMaintainTable = () => {
     }
   };
 
-  // const handleHubspot = (result) => {
-  //   if (!result) {
-  //     return;
-  //   }
-  // };
+  // razorpay payment integration
 
+  const handlePayment = async () => {
+    if (isLoading) return; // Prevent further calls if already loading
+    setLoading(true);
 
-  const handleBtnClick = ()=>{
-    
-    initializePaypal();
-  }
+    try {
+      const response = await fetch("/api/payment", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ amount: selectedCost * 80 }),
+      });
+
+      if (!response.ok) {
+        if (response.status === 429) {
+          alert("Too many requests. Please try again later.");
+        } else {
+          alert("Order creation failed!");
+        }
+        throw new Error("Payment API failed");
+      }
+
+      const data = await response.json();
+
+      if (!data.orderId) {
+        alert("Order creation failed");
+        setLoading(false);
+        return;
+      }
+
+      const options = {
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+        amount: data.amount,
+        currency: data.currency,
+        name: "Webguruz Technologies",
+        description: "Payment for Order",
+        order_id: data.orderId,
+        handler: function (response) {
+          router.push("/payment-recieved");
+        },
+        prefill: {
+          name: " ",
+          contact: " ",
+        },
+        theme: {
+          color: "#3399cc",
+        },
+      };
+
+      const razorpay = new window.Razorpay(options);
+      razorpay.open();
+      setShowModal(false);
+    } catch (error) {
+      console.error("Error during payment handling:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleOpen = (priceVal) => {
+    setSelectedCountry("Select");
+    setSelectedCost(priceVal);
+    setCountryModal(!countryModal);
+  };
+
+  const handleCountryChange = (event) => {
+    const country = event.target.value;
+    setSelectedCountry(country);
+
+    const paypalButtonContainer = document.getElementById(
+      "paypal-button-container"
+    );
+
+    if (country === "India") {
+      if (paypalButtonContainer) {
+        paypalButtonContainer.innerHTML = "Processing...";
+      }
+
+      setShowModal(true);
+      setCountryModal(false);
+    } else {
+      setShowModal(true);
+      setCountryModal(false);
+    }
+  };
+
+  const handleBtnClick = () => {
+    if (selectedCountry === "India") {
+      handlePayment();
+    } else {
+      initializePaypal();
+    }
+  };
 
   const initializePaypal = () => {
     // Clean any existing buttons first
@@ -67,7 +165,11 @@ const WordMaintainTable = () => {
               headers: {
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify({ costs: selectedCost , email: myemail , url: myUrl}), // Use the selected cost
+              body: JSON.stringify({
+                costs: selectedCost,
+                email: myemail,
+                url: myUrl,
+              }), // Use the selected cost
             });
 
             const { orderID } = await response.json();
@@ -84,10 +186,10 @@ const WordMaintainTable = () => {
             });
 
             const result = await response.json();
-            console.log('my result >>>',result)
+
             if (result) {
               handleCloseModal(); // Close the modal after successful payment
-            
+
               router.push("/payment-recieved");
             } else {
               console.error("Payment capture failed:", result.error);
@@ -195,9 +297,10 @@ const WordMaintainTable = () => {
                   ))}
                   <tr>
                     <td>Purchase</td>
+
                     <td>
                       <button
-                        onClick={() => handlePurchaseClick("55")}
+                        onClick={() => handleOpen("55")}
                         className="btn btn-primary"
                       >
                         Purchase
@@ -205,7 +308,7 @@ const WordMaintainTable = () => {
                     </td>
                     <td>
                       <button
-                        onClick={() => handlePurchaseClick("99")}
+                        onClick={() => handleOpen("99")}
                         className="btn btn-primary"
                       >
                         Purchase
@@ -213,7 +316,7 @@ const WordMaintainTable = () => {
                     </td>
                     <td>
                       <button
-                        onClick={() => handlePurchaseClick("299")}
+                        onClick={() => handleOpen("299")}
                         className="btn btn-primary"
                       >
                         Purchase
@@ -226,6 +329,153 @@ const WordMaintainTable = () => {
           </div>
         </div>
       </div>
+
+      {countryModal && (
+        <>
+          <div
+            className="modal show d-block get-quote-form"
+            id="staticBackdrop"
+            data-bs-backdrop="static"
+            data-bs-keyboard="false"
+            tabIndex="-1"
+            aria-labelledby="staticBackdropLabel"
+          >
+            <div className="modal-dialog modal-dialog-centered">
+              <div className="modal-content">
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={() => setCountryModal(false)}
+                ></button>
+                <div className="modal-body">
+                  <div className="items">
+                    <label htmlFor="country-select">
+                      Select Your Country Before Payment
+                    </label>
+
+                    <select
+                      id="country-select"
+                      className="form-control"
+                      value={selectedCountry}
+                      onChange={handleCountryChange}
+                    >
+                      <option value="">--Select--</option>
+                      <option value="Albania">Albania</option>
+                      <option value="Andorra">Andorra</option>
+                      <option value="Anguilla">Anguilla</option>
+                      <option value="Antigua and Barbuda">
+                        Antigua and Barbuda
+                      </option>
+                      <option value="Argentina">Argentina</option>
+                      <option value="Aruba">Aruba</option>
+                      <option value="Australia">Australia</option>
+                      <option value="Austria">Austria</option>
+                      <option value="Bahamas">Bahamas</option>
+                      <option value="Barbados">Barbados</option>
+                      <option value="Belarus">Belarus</option>
+                      <option value="Belgium">Belgium</option>
+                      <option value="Belize">Belize</option>
+                      <option value="Bosnia and Herzegovina">
+                        Bosnia and Herzegovina
+                      </option>
+                      <option value="Brazil">Brazil</option>
+                      <option value="British Virgin Islands">
+                        British Virgin Islands
+                      </option>
+                      <option value="Bulgaria">Bulgaria</option>
+                      <option value="Canada">Canada</option>
+                      <option value="Cayman Islands">Cayman Islands</option>
+                      <option value="Chile">Chile</option>
+                      <option value="Colombia">Colombia</option>
+                      <option value="Costa Rica">Costa Rica</option>
+                      <option value="Croatia">Croatia</option>
+                      <option value="Cuba">Cuba</option>
+                      <option value="Curacao">Curacao</option>
+                      <option value="Cyprus">Cyprus</option>
+                      <option value="Czech Republic">Czech Republic</option>
+                      <option value="Denmark">Denmark</option>
+                      <option value="Dominica">Dominica</option>
+                      <option value="Dominican Republic">
+                        Dominican Republic
+                      </option>
+                      <option value="Ecuador">Ecuador</option>
+                      <option value="El Salvador">El Salvador</option>
+                      <option value="Estonia">Estonia</option>
+                      <option value="Falkland Islands">Falkland Islands</option>
+                      <option value="Finland">Finland</option>
+                      <option value="France">France</option>
+                      <option value="Germany">Germany</option>
+                      <option value="Greece">Greece</option>
+                      <option value="Grenada">Grenada</option>
+                      <option value="Guadeloupe">Guadeloupe</option>
+                      <option value="Guatemala">Guatemala</option>
+                      <option value="Guyana">Guyana</option>
+                      <option value="Haiti">Haiti</option>
+                      <option value="Holy See">Holy See</option>
+                      <option value="Honduras">Honduras</option>
+                      <option value="Hungary">Hungary</option>
+                      <option value="Iceland">Iceland</option>
+                      <option value="India">India</option>
+                      <option value="Ireland">Ireland</option>
+                      <option value="Israel">Israel</option>
+                      <option value="Italy">Italy</option>
+                      <option value="Jamaica">Jamaica</option>
+                      <option value="Kuwait">Kuwait</option>
+                      <option value="Latvia">Latvia</option>
+                      <option value="Liechtenstein">Liechtenstein</option>
+                      <option value="Lithuania">Lithuania</option>
+                      <option value="Luxembourg">Luxembourg</option>
+                      <option value="Malta">Malta</option>
+                      <option value="Martinique">Martinique</option>
+                      <option value="Mexico">Mexico</option>
+                      <option value="Moldova">Moldova</option>
+                      <option value="Monaco">Monaco</option>
+                      <option value="Montenegro">Montenegro</option>
+                      <option value="Montserrat">Montserrat</option>
+                      <option value="Netherlands">Netherlands</option>
+                      <option value="Nicaragua">Nicaragua</option>
+                      <option value="North Macedonia">North Macedonia</option>
+                      <option value="Panama">Panama</option>
+                      <option value="Paraguay">Paraguay</option>
+                      <option value="Peru">Peru</option>
+                      <option value="Poland">Poland</option>
+                      <option value="Portugal">Portugal</option>
+                      <option value="Puerto Rico">Puerto Rico</option>
+                      <option value="Romania">Romania</option>
+                      <option value="Russia">Russia</option>
+                      <option value="Saint Barthelemy">Saint Barthelemy</option>
+                      <option value="Saint Martin">Saint Martin</option>
+                      <option value="Saint Peirre and Miquelon">
+                        Saint Peirre and Miquelon
+                      </option>
+                      <option value="San Marino">San Marino</option>
+                      <option value="Serbia">Serbia</option>
+                      <option value="Sint Maarten">Sint Maarten</option>
+                      <option value="Slovakia">Slovakia</option>
+                      <option value="Slovenia">Slovenia</option>
+                      <option value="Spain">Spain</option>
+                      <option value="Suriname">Suriname</option>
+                      <option value="Sweden">Sweden</option>
+                      <option value="Switzerland">Switzerland</option>
+                      <option value="Turks and Caicos Islands">
+                        Turks and Caicos Islands
+                      </option>
+                      <option value="UK">UK</option>
+                      <option value="Ukraine">Ukraine</option>
+                      <option value="Uruguay">Uruguay</option>
+                      <option value="USA">USA</option>
+                      <option value="Venezuela">Venezuela</option>
+                    </select>
+                  </div>
+
+                  <br />
+                  <div id="paypal-button-container"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
 
       {/* Payment Modal */}
       <Modal
@@ -243,7 +493,7 @@ const WordMaintainTable = () => {
         </Modal.Header>
         <Modal.Body className="wordpress-payment-body">
           <p className="wordpress-payment-text">
-            Please complete your payment of ${selectedCost} using PayPal:
+            Please complete your payment of ${selectedCost}:
           </p>
 
           <Form>
@@ -252,8 +502,7 @@ const WordMaintainTable = () => {
                 type="email"
                 value={myemail}
                 placeholder="Enter Email ID"
-                onChange={(e)=> setMyemail(e.target.value)}
-                
+                onChange={(e) => setMyemail(e.target.value)}
                 autoFocus
               />
             </Form.Group>
@@ -262,16 +511,18 @@ const WordMaintainTable = () => {
                 type="text"
                 value={myUrl}
                 placeholder="Enter Website URL"
-                onChange={(e)=> setMyUrl(e.target.value)}
+                onChange={(e) => setMyUrl(e.target.value)}
                 autoFocus
               />
             </Form.Group>
-            <Button variant="primary" onClick={()=>handleBtnClick(myUrl,myemail)} className="wordpress-payment-cancel-btn">
-            Submit
-          </Button>
+            <Button
+              variant="primary"
+              onClick={() => handleBtnClick(myUrl, myemail)}
+              className="wordpress-payment-cancel-btn"
+            >
+              Submit
+            </Button>
           </Form>
-
-
 
           <div
             id="paypal-button-container"

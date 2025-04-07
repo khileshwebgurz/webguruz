@@ -1,6 +1,6 @@
 import axios from "axios";
 const HUBSPOT_API_KEY = process.env.HUBSPOT_KEY;
-const PAYPAL_ACCESS_TOKEN = process.env.PAYPAL_ACCESS_TOKEN;
+
 import { getPayPalAccessToken } from "../../../../lib/paypal";
 import {
   updateContact,
@@ -11,13 +11,8 @@ export async function POST(req) {
   try {
     const body = await req.json();
     const customData = body?.resource?.custom_id || "{}";
-    // console.log('my custom data is >>>',customData);
 
     const { email: myEmail, url: url } = JSON.parse(customData); // Parse JSON
-    // console.log('my email and url is >>>' ,myEmail, url)
-
-    // const firstName = body?.resource?.payer?.name?.given_name || "No first name";
-    // const lastName = body?.resource?.payer?.name?.surname || "No last name";
 
     let status = "Unsuccessful";
     if (body?.resource?.status === "COMPLETED") status = "Successful";
@@ -41,7 +36,7 @@ export async function POST(req) {
           },
         }
       );
-      console.log("my payeresponse >>>>", payerResponse?.data?.payer?.name);
+
       const payerInfo = payerResponse?.data?.payer?.name;
 
       if (payerInfo) {
@@ -82,15 +77,18 @@ export async function POST(req) {
       }
     );
 
-    console.log("my response data is >>>>", response.data);
-
     let message = "";
 
     if (response.data.results.length > 0) {
       await updateContact(response.data.results[0].id, HUBSPOT_API_KEY);
       message = "Contact Updated";
     } else {
-      console.log('my email for hubspot  is >>>>>', myEmail , 'my url is >>', url)
+      console.log(
+        "my email for hubspot  is >>>>>",
+        myEmail,
+        "my url is >>",
+        url
+      );
       await createHubSpotContact(
         myEmail,
         firstName,
@@ -107,8 +105,6 @@ export async function POST(req) {
       myEmail,
       url,
     };
-
-    console.log("Extracted Data:", responseData);
 
     return new Response(JSON.stringify({ message: message }), {
       status: 200,
