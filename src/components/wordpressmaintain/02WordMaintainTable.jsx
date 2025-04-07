@@ -48,7 +48,7 @@ const WordMaintainTable = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ amount: selectedCost * 80 }),
+        body: JSON.stringify({ amount: selectedCost * 80 , email: myemail , url: myUrl}),
       });
 
       if (!response.ok) {
@@ -61,6 +61,7 @@ const WordMaintainTable = () => {
       }
 
       const data = await response.json();
+      console.log('my data is >>>>',data);
 
       if (!data.orderId) {
         alert("Order creation failed");
