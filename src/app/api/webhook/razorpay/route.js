@@ -11,6 +11,8 @@ export async function POST(req) {
       "my razorpay webhook data is >>>>",
       body.payload.payment.entity.notes
     );
+    const myEmail = body.payload.payment.entity.notes.email;
+    const url = body.payload.payment.entity.notes.url;
 
     let status = "Unsuccessful";
     if (body.payload.payment.entity.status === "captured")
