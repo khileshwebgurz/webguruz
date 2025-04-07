@@ -83,12 +83,7 @@ export async function POST(req) {
       await updateContact(response.data.results[0].id, HUBSPOT_API_KEY);
       message = "Contact Updated";
     } else {
-      console.log(
-        "my email for hubspot  is >>>>>",
-        myEmail,
-        "my url is >>",
-        url
-      );
+     
       await createHubSpotContact(
         myEmail,
         firstName,
