@@ -316,7 +316,7 @@ const JooTable = () => {
       {countryModal && (
         <>
           <div
-            className="modal show d-block get-quote-form"
+            className="modal show d-block get-quote-form purchase-form"
             id="staticBackdrop"
             data-bs-backdrop="static"
             data-bs-keyboard="false"

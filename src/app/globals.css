@@ -1,4 +1,65 @@
 /*-----------new menu Css------------*/
+
+/* purchase-btn-model-css */
+.purchase-form .modal-dialog.modal-dialog-centered {
+  overflow: hidden;
+}
+
+.purchase-form {
+  overflow: hidden;
+  background: #000000c4;
+}
+
+.purchase-form .modal-content {
+  max-width: 550px !important;
+  margin: 0 auto !important;
+  padding: 60px;
+  position: relative;
+  border-radius: 15px;
+  background: #f0fdff;
+  max-height: 650px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: auto;
+}
+
+.purchase-form .modal-content label {
+  font-size: 18px;
+  display: block;
+  margin: 0 0 30px;
+  color: #000;
+  font-weight: 600;
+  text-align: center;
+}
+
+select#country-select {
+  width: 100%;
+  display: block;
+  height: 50px;
+  border-radius: 10px;
+  margin: 0 0 20px;
+  color: #000;
+}
+
+.purchase-form .modal-content button.btn-close {
+  position: absolute;
+  right: 1px;
+  top: 0px;
+  background-color: #fff;
+  opacity: 1;
+  padding: 12px;
+  border-radius: 50px;
+  font-size: 9px;
+  z-index: 999;
+  border-color: red;
+  color: #fff !important;
+  filter: invert(1);
+}
+
+.purchase-form .modal-content {
+  padding: 70px 20px 30px;
+}
+/* end */
 /* paypal-model-css */
 .wordpress-payment-modal .wordpress-payment-content {
   padding: 20px;
